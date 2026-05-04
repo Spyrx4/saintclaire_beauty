@@ -96,5 +96,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/profit-loss',           [ReportController::class, 'profitLoss']);
         Route::get('/audit-trail',           [ReportController::class, 'auditTrail']);
         Route::get('/ingredient-analysis',   [ReportController::class, 'ingredientAnalysis']);
+        Route::get('/export-pdf',            [ReportController::class, 'exportPdf']);
     });
 });

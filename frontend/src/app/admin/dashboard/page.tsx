@@ -8,6 +8,9 @@ import AuthGuard from '@/components/AuthGuard';
 function DashboardContent() {
   const [activeReport, setActiveReport] = useState("Monthly Sales");
   const [data, setData] = useState<any[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortConfig, setSortConfig] = useState<{ key: string, direction: 'asc' | 'desc' } | null>(null);
+  const [exportLoading, setExportLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const user = getUser();
 
@@ -24,6 +27,7 @@ function DashboardContent() {
   ];
 
   useEffect(() => {
+    setSearchTerm("");
     fetchReportData();
   }, [activeReport]);
 
@@ -51,9 +55,79 @@ function DashboardContent() {
     }
   };
 
+  const handleExportPdf = async () => {
+    try {
+      setExportLoading(true);
+      const endpoint = reports.find(r => r.name === activeReport)?.endpoint || '';
+      const type = endpoint.replace('/reports/', '');
+
+      const token = localStorage.getItem('auth_token');
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+      
+      const response = await fetch(`${API_URL}/reports/export-pdf?type=${type}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to generate PDF');
+      }
+      
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${type}-report.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error(err);
+      alert('Error exporting PDF');
+    } finally {
+      setExportLoading(false);
+    }
+  };
+
   const formatColumnName = (key: string) => {
     return key.replace(/_/g, ' ');
   };
+
+  const filteredData = data.filter((row) => {
+    if (!searchTerm) return true;
+    return Object.values(row).some((val) => 
+      String(val).toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
+
+  const handleSort = (key: string) => {
+    let direction: 'asc' | 'desc' = 'asc';
+    if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const sortedData = React.useMemo(() => {
+    let sortableItems = [...filteredData];
+    if (sortConfig !== null) {
+      sortableItems.sort((a, b) => {
+        const aVal = a[sortConfig.key];
+        const bVal = b[sortConfig.key];
+        // Handle undefined or null
+        if (aVal == null) return sortConfig.direction === 'asc' ? 1 : -1;
+        if (bVal == null) return sortConfig.direction === 'asc' ? -1 : 1;
+        
+        if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
+        if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
+        return 0;
+      });
+    }
+    return sortableItems;
+  }, [filteredData, sortConfig]);
 
   return (
     <div className="flex min-h-screen bg-slate-50 pt-24">
@@ -105,8 +179,29 @@ function DashboardContent() {
             <h2 className="text-4xl font-bold text-primary">{activeReport}</h2>
           </div>
           <div className="flex gap-4">
-            <button className="bg-white border border-gray-200 px-6 py-2 rounded-lg font-medium hover:shadow-md transition-all text-sm">
-              Export PDF
+            <div className="relative">
+              <input 
+                type="text" 
+                placeholder={`Search in ${activeReport}...`}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-secondary/50 w-64"
+              />
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
+            </div>
+            <button 
+              onClick={handleExportPdf}
+              disabled={loading || exportLoading || data.length === 0}
+              className="bg-white border border-gray-200 px-6 py-2 rounded-lg font-medium hover:shadow-md transition-all text-sm disabled:opacity-50 flex items-center gap-2"
+            >
+              {exportLoading ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-gray-300 border-t-primary rounded-full animate-spin"></div>
+                  Exporting...
+                </>
+              ) : (
+                <>📄 Export PDF</>
+              )}
             </button>
           </div>
         </header>
@@ -117,20 +212,33 @@ function DashboardContent() {
               <div className="w-12 h-12 border-4 border-slate-100 border-t-secondary rounded-full animate-spin mb-6"></div>
               <p className="text-primary not-italic font-medium">Fetching Live Data...</p>
             </div>
-          ) : data.length > 0 ? (
+          ) : filteredData.length > 0 ? (
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="border-b border-gray-100 text-xs uppercase tracking-widest text-text-muted font-bold">
                     <th className="pb-6 px-4">#</th>
-                    {Object.keys(data[0]).filter(k => typeof data[0][k] !== 'object').map(key => (
-                      <th key={key} className="pb-6 px-4">{formatColumnName(key)}</th>
+                    {Object.keys(sortedData[0]).filter(k => typeof sortedData[0][k] !== 'object').map(key => (
+                      <th 
+                        key={key} 
+                        className="pb-6 px-4 cursor-pointer hover:text-primary transition-colors select-none"
+                        onClick={() => handleSort(key)}
+                      >
+                        <div className="flex items-center gap-2">
+                          {formatColumnName(key)}
+                          {sortConfig?.key === key ? (
+                            <span className="text-[10px] text-secondary">{sortConfig.direction === 'asc' ? '▲' : '▼'}</span>
+                          ) : (
+                            <span className="text-[10px] text-gray-300 opacity-0 group-hover:opacity-100">▲</span>
+                          )}
+                        </div>
+                      </th>
                     ))}
                   </tr>
                 </thead>
                 <tbody className="text-sm">
-                  {data.map((row, idx) => (
-                    <tr key={idx} className="border-b border-gray-50 hover:bg-slate-50 transition-colors">
+                  {sortedData.map((row, idx) => (
+                    <tr key={idx} className="border-b border-gray-50 hover:bg-primary/5 hover:scale-[1.01] transition-all cursor-default">
                       <td className="py-5 px-4 font-bold text-primary">{idx + 1}</td>
                       {Object.keys(row).filter(k => typeof row[k] !== 'object').map(key => (
                         <td key={key} className="py-5 px-4 text-text-muted">
@@ -144,7 +252,7 @@ function DashboardContent() {
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center h-[500px] text-center text-gray-400 italic">
-               <p>No data available for this report.</p>
+               <p>{searchTerm ? "No results found for your search." : "No data available for this report."}</p>
             </div>
           )}
         </div>
