@@ -41,7 +41,7 @@ export default function RegisterPage() {
 
       <div className="glass w-full max-w-[520px] p-14 rounded-[40px] shadow-2xl fade-in relative z-10 border border-white/20">
         <div className="text-center mb-10">
-          <h1 className="text-primary text-xs uppercase tracking-[0.5em] font-bold mb-4">Saint Claire</h1>
+          <img src="/logo.png" alt="Saint Claire Logo" className="h-16 w-auto mx-auto rounded-lg mb-4 shadow-sm" />
           <h2 className="text-4xl font-bold text-primary mb-2">Create Account</h2>
           <p className="text-text-muted text-sm">Join the Saint Claire Beauty community</p>
         </div>

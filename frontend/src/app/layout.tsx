@@ -26,7 +26,10 @@ export default function RootLayout({
         <footer className="bg-primary text-white py-16 mt-20">
           <div className="container grid grid-cols-1 md:grid-cols-3 gap-12">
             <div>
-              <h2 className="text-2xl font-bold mb-6 italic">Saint Claire</h2>
+              <div className="flex items-center gap-3 mb-6">
+                <img src="/logo.png" alt="Saint Claire Beauty Logo" className="h-10 w-auto rounded-lg grayscale brightness-200" />
+                <h2 className="text-2xl font-bold italic">Saint Claire</h2>
+              </div>
               <p className="text-gray-400 max-w-xs">
                 Crafting luxury skincare with technical precision and ingredient transparency.
               </p>

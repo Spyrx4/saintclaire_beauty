@@ -246,7 +246,7 @@ Setelah audit menyeluruh, ditemukan **5 celah keamanan kritis**:
 
 | Role | Email | Password |
 |------|-------|----------|
-| 👑 Owner | `owner@saintclaire.com` | `password` |
+| 👑 Owner | `` | `password` |
 | 🔧 Admin | `admin@saintclaire.com` | `password` |
 | 🛒 Customer | `customer@gmail.com` | `password` |
 
@@ -488,3 +488,83 @@ Customer checkout (COD atau Midtrans)
 *   ✅ Midtrans SDK (`midtrans/midtrans-php ^2.6`) terinstall.
 *   ✅ Checkout: RajaOngkir fallback statis berjalan tanpa API key.
 *   ✅ Kasir Dashboard: filter status, update status berfungsi.
+
+---
+
+## 📅 [2026-05-05] - Step 10: Reporting Engine Overhaul & PDF Export
+
+### 10.1 Refactoring PDF Generation (FPDF)
+*   **Structured Layout**: Implemented specific column configurations for all 9 report types, replacing the previous generic table generator.
+*   **Professional Branding**:
+    *   Integrated company logo with automatic type detection (fixing a bug where JPEG files named `.png` caused crashes).
+    *   Added professional headers with report titles and decorative separators.
+    *   Added footers with page numbering and print timestamps.
+*   **Data Formatting**:
+    *   Implementation of `getNestedValue` helper to handle dot-notation keys (e.g., `user.name`).
+    *   Currency formatting for financial data (Rp).
+    *   Datetime formatting for transaction logs.
+    *   Percentage calculation for profit/loss margins.
+
+### 10.2 Bug Fixes & Resilience
+*   **Image Parsing Fix**: Updated `ReportController` to detect image magic bytes (`FFD8` for JPG vs `89PNG`) to prevent FPDF errors when file extensions don't match actual content.
+*   **Error Handling**: Wrapped PDF image processing in try-catch blocks to ensure reports generate even if assets are missing or corrupted.
+
+---
+
+## 📅 [2026-05-05] - Step 11: Owner Experience & Login Refinement
+
+### 11.1 Role-Based Login Redirection
+*   **Automatic Login Fix**: Removed hardcoded redirection logic from the login page.
+*   **Centralized Routing**: Integrated `getRedirectAfterLogin()` helper to ensure users are sent to the correct dashboard (Kasir vs Admin/Owner) segera setelah autentikasi.
+
+### 11.2 Premium Owner Dashboard UI
+*   **Executive Strategy Center**: Desain ulang admin dashboard dengan estetika premium (Stone & Primary color palette).
+*   **Summary Statistics (KPIs)**:
+    *   **Revenue Growth**: Kalkulasi real-time total penjualan.
+    *   **Total Operations**: Counter untuk pesanan aktif.
+    *   **Customer Base**: Tracking jumlah member eksklusif.
+*   **Enhanced Navigation**:
+    *   Sidebar modern dengan ikon kontekstual untuk setiap jenis laporan.
+    *   Peningkatan UI tabel dengan ID padding, monospaced numbers, dan hover effects.
+    *   Labeling dinamis ("Owner Strategy Center" vs "Administrative Access").
+*   **Utility Improvements**:
+    *   Implementasi fungsi Logout yang membersihkan sesi secara menyeluruh.
+    *   Penyempurnaan Search dan Export PDF buttons dengan feedback visual loading.
+    *   Memperbaiki bug `useRouter` yang tidak terdefinisi pada dashboard.
+
+---
+
+## 📅 [2026-05-05] - Step 12: Customer Invoices & Order Management
+
+### 12.1 Digital Invoice Generation
+*   **Branded Invoices**: Implementasi sistem ekspor invoice PDF otomatis untuk setiap pesanan.
+*   **Professional Template**:
+    *   Header: Logo Saint Claire Beauty + Order Metadata.
+    *   Billing Info: Data customer & alamat pengiriman.
+    *   Itemized Table: Deskripsi produk, qty, harga satuan, dan subtotal.
+    *   Financial Summary: Perhitungan otomatis Subtotal, Ongkos Kirim (berdasarkan kurir), dan Total Akhir.
+*   **Access Control**: Endpoint invoice diproteksi agar hanya dapat diakses oleh pemilik pesanan, admin, atau owner.
+
+### 12.2 Dashboard Integrations
+*   **My Orders (Frontend)**: Menambahkan tombol "📄 Invoice" pada setiap kartu pesanan pelanggan untuk akses cepat ke bukti transaksi.
+*   **Kasir Panel**: Menambahkan akses invoice pada panel kasir untuk memudahkan operasional saat pengepakan atau konfirmasi pengiriman.
+*   **Visual Feedback**: Implementasi micro-loading state pada tombol download untuk memberikan feedback instan saat PDF sedang diproses.
+
+---
+
+## 📅 [2026-05-05] - Step 13: Dashboard UI Responsiveness Fix
+
+### 13.1 Mobile Layout Support
+*   **Responsive Sidebar**: Implementasi sidebar yang dapat disembunyikan (*collapsible*) pada layar mobile menggunakan `isMobileMenuOpen` state dan Tailwind transition.
+*   **Hamburger Menu**: Penambahan tombol menu hamburger pada header mobile untuk memudahkan navigasi.
+*   **Interactive Overlay**: Penambahan overlay gelap di belakang sidebar mobile untuk fokus visual dan kemudahan menutup menu.
+
+### 13.2 Layout Restructuring
+*   **Fluid Containers**: Mengganti margin fixed `ml-72` menjadi dinamis (`ml-0 lg:ml-72`) dan menyesuaikan padding untuk layar kecil.
+*   **Adaptive Grid**: Mengubah grid kartu ringkasan eksekutif dari 3-kolom menjadi responsif (1 kolom di mobile, 2 di tablet, 3 di desktop).
+*   **Form Flexibility**: Search bar dan tombol export kini menyesuaikan lebar layar secara otomatis, beralih ke layout vertikal pada perangkat sangat kecil.
+*   **Table Optimization**: Memastikan kontainer tabel memiliki scroll horizontal yang aman untuk mencegah layout pecah saat menampilkan data luas.
+
+### 13.3 Navigation Experience
+*   **Auto-Close Logic**: Sidebar mobile otomatis menutup setelah item laporan dipilih untuk memberikan ruang pandang maksimal pada data yang diminta.
+*   **Visual Refinement**: Penyesuaian ukuran font header dan jarak antar elemen agar tetap proporsional di berbagai ukuran layar.

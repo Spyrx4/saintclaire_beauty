@@ -27,7 +27,10 @@ export default function Navbar() {
     return (
       <nav className="glass fixed w-full z-50 py-5 transition-all duration-300">
         <div className="container flex justify-between items-center">
-          <a href="/" className="text-2xl font-bold tracking-tighter text-primary">SAINT CLAIRE</a>
+          <a href="/" className="flex items-center gap-3">
+            <img src="/logo.png" alt="Saint Claire Beauty Logo" className="h-10 w-auto rounded-lg" />
+            <span className="text-xl font-bold tracking-tighter text-primary hidden sm:block">SAINT CLAIRE</span>
+          </a>
         </div>
       </nav>
     );
@@ -44,8 +47,9 @@ export default function Navbar() {
   return (
     <nav className="glass fixed w-full z-50 py-5 transition-all duration-300">
       <div className="container flex justify-between items-center">
-        <a href="/" className="text-2xl font-bold tracking-tighter text-primary">
-          SAINT CLAIRE
+        <a href="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+          <img src="/logo.png" alt="Saint Claire Beauty Logo" className="h-10 w-auto rounded-lg" />
+          <span className="text-xl font-bold tracking-tighter text-primary hidden sm:block">SAINT CLAIRE</span>
         </a>
 
         <div className="flex gap-6 items-center font-medium uppercase text-sm tracking-widest">

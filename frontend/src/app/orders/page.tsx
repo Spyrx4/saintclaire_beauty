@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { api } from '@/lib/api';
+import { api, getBaseApiUrl } from '@/lib/api';
 import { useSearchParams } from 'next/navigation';
 import AuthGuard from '@/components/AuthGuard';
 
@@ -17,6 +17,7 @@ function OrdersContent() {
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [cancelling, setCancelling] = useState<number | null>(null);
+  const [downloading, setDownloading] = useState<number | null>(null);
   const searchParams = useSearchParams();
   const success = searchParams.get('success');
 
@@ -30,6 +31,38 @@ function OrdersContent() {
       console.error(err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDownloadInvoice = async (id: number, orderNumber: string) => {
+    try {
+      setDownloading(id);
+      const token = localStorage.getItem('auth_token');
+      const API_URL = getBaseApiUrl();
+      
+      const response = await fetch(`${API_URL}/orders/${id}/invoice`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (!response.ok) throw new Error('Failed to download invoice');
+      
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Invoice-${orderNumber}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error(err);
+      alert('Error downloading invoice');
+    } finally {
+      setDownloading(null);
     }
   };
 
@@ -131,15 +164,30 @@ function OrdersContent() {
                         <p className="text-xs text-text-muted">Total</p>
                         <p className="font-bold text-primary text-lg">Rp {parseFloat(order.total_price).toLocaleString('id-ID')}</p>
                       </div>
-                      {order.status === 'pending' && (
-                        <button
-                          onClick={() => cancelOrder(order.id)}
-                          disabled={cancelling === order.id}
-                          className="border border-red-200 text-red-500 hover:bg-red-500 hover:text-white px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-widest transition-all disabled:opacity-50"
-                        >
-                          {cancelling === order.id ? '...' : 'Batalkan'}
-                        </button>
-                      )}
+                      
+                      <div className="flex flex-col gap-2">
+                        {order.status !== 'cancelled' && (
+                          <button
+                            onClick={() => handleDownloadInvoice(order.id, order.order_number)}
+                            disabled={downloading === order.id}
+                            className="bg-primary text-white hover:bg-secondary px-5 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                          >
+                            {downloading === order.id ? (
+                              <div className="w-3 h-3 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                            ) : '📄 Invoice'}
+                          </button>
+                        )}
+                        
+                        {order.status === 'pending' && (
+                          <button
+                            onClick={() => cancelOrder(order.id)}
+                            disabled={cancelling === order.id}
+                            className="border border-red-200 text-red-500 hover:bg-red-500 hover:text-white px-5 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all disabled:opacity-50"
+                          >
+                            {cancelling === order.id ? '...' : 'Batalkan'}
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>

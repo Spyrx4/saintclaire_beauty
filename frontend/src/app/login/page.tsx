@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { api } from '@/lib/api';
 import { useRouter } from 'next/navigation';
+import { getRedirectAfterLogin } from '@/lib/auth';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -21,11 +22,8 @@ export default function LoginPage() {
       localStorage.setItem('auth_token', data.access_token);
       localStorage.setItem('user', JSON.stringify(data.user));
       
-      if (data.user.role === 'admin') {
-        router.push('/admin/dashboard');
-      } else {
-        router.push('/');
-      }
+      const redirectUrl = getRedirectAfterLogin();
+      router.push(redirectUrl);
     } catch (err: any) {
       setError(err.message || 'Login failed. Please check your credentials.');
     } finally {
@@ -41,7 +39,7 @@ export default function LoginPage() {
 
       <div className="glass w-full max-w-[500px] p-16 rounded-[40px] shadow-2xl fade-in relative z-10 border border-white/20">
         <div className="text-center mb-12">
-          <h1 className="text-primary text-xs uppercase tracking-[0.5em] font-bold mb-6">Saint Claire</h1>
+          <img src="/logo.png" alt="Saint Claire Logo" className="h-16 w-auto mx-auto rounded-lg mb-6 shadow-sm" />
           <h2 className="text-4xl font-bold text-primary mb-3">Welcome Back</h2>
           <p className="text-text-muted">Enter your credentials to access your routine</p>
         </div>

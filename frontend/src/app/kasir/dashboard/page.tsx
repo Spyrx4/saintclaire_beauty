@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { api } from '@/lib/api';
+import { api, getBaseApiUrl } from '@/lib/api';
 import { getUser } from '@/lib/auth';
 import AuthGuard from '@/components/AuthGuard';
 
@@ -27,7 +27,40 @@ function KasirDashboardContent() {
   const [tracking, setTracking] = useState<Record<number, string>>({});
   const [showTracking, setShowTracking] = useState<number | null>(null);
   const [codConfirming, setCodConfirming] = useState<number | null>(null);
+  const [downloading, setDownloading] = useState<number | null>(null);
   const user = getUser();
+
+  const handleDownloadInvoice = async (id: number, orderNumber: string) => {
+    try {
+      setDownloading(id);
+      const token = localStorage.getItem('auth_token');
+      const API_URL = getBaseApiUrl();
+      
+      const response = await fetch(`${API_URL}/orders/${id}/invoice`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (!response.ok) throw new Error('Failed to download invoice');
+      
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Invoice-${orderNumber}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error(err);
+      alert('Error downloading invoice');
+    } finally {
+      setDownloading(null);
+    }
+  };
 
   const fetchOrders = useCallback(async () => {
     setLoading(true);
@@ -84,9 +117,12 @@ function KasirDashboardContent() {
     <div className="flex min-h-screen bg-slate-50 pt-24">
       {/* Sidebar */}
       <aside className="w-72 glass border-r border-gray-200 p-8 flex flex-col gap-6 min-h-screen">
-        <a href="/" className="text-xs uppercase tracking-widest font-bold text-secondary flex items-center gap-2 hover:translate-x-1 transition-transform">
-          ← Back to Home
-        </a>
+        <div>
+          <a href="/" className="text-xs uppercase tracking-widest font-bold text-secondary flex items-center gap-2 hover:translate-x-1 transition-transform mb-8">
+            ← Back to Home
+          </a>
+          <img src="/logo.png" alt="Saint Claire Logo" className="h-12 w-auto rounded-lg mb-6 shadow-sm" />
+        </div>
 
         <div className="bg-primary/5 rounded-2xl p-5">
           <p className="text-xs uppercase tracking-widest text-text-muted font-bold mb-1">Logged in as</p>
@@ -213,6 +249,19 @@ function KasirDashboardContent() {
                     </p>
 
                     <div className="flex gap-2">
+                      {/* Invoice Button */}
+                      {order.status !== 'cancelled' && (
+                        <button
+                          onClick={() => handleDownloadInvoice(order.id, order.order_number)}
+                          disabled={downloading === order.id}
+                          className="border border-gray-200 text-gray-600 px-4 py-2 rounded-xl text-sm font-medium hover:bg-gray-50 transition-all flex items-center gap-2 disabled:opacity-50"
+                        >
+                          {downloading === order.id ? (
+                            <div className="w-3 h-3 border-2 border-gray-300 border-t-primary rounded-full animate-spin"></div>
+                          ) : '📄 Invoice'}
+                        </button>
+                      )}
+
                       {/* COD Confirm Button — only when shipped */}
                       {isCodShipped && order.payment_status !== 'paid' && (
                         <button

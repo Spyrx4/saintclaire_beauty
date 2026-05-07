@@ -37,6 +37,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/user',   fn(Request $r) => $r->user());
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/orders/{id}/invoice', [OrderController::class, 'downloadInvoice']);
 
     // ─── Customer Only ───────────────────────────────────────
     Route::middleware('role:customer')->group(function () {
