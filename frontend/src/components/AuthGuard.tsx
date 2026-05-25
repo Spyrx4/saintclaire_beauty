@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { isLoggedIn, isAdminOrOwner, isKasir, getUser } from '@/lib/auth';
+import { isLoggedIn, isAdmin, getUser } from '@/lib/auth';
 
 interface AuthGuardProps {
   children: React.ReactNode;
-  requireRole?: 'admin' | 'owner' | 'admin_or_owner' | 'kasir' | 'staff' | 'customer';
+  requireRole?: 'admin' | 'customer';
 }
 
 export default function AuthGuard({ children, requireRole }: AuthGuardProps) {
@@ -29,10 +29,6 @@ export default function AuthGuard({ children, requireRole }: AuthGuardProps) {
     let allowed = true;
 
     if (requireRole === 'admin' && user.role !== 'admin') allowed = false;
-    if (requireRole === 'owner' && user.role !== 'owner') allowed = false;
-    if (requireRole === 'kasir' && user.role !== 'kasir') allowed = false;
-    if (requireRole === 'admin_or_owner' && !isAdminOrOwner()) allowed = false;
-    if (requireRole === 'staff' && !['admin', 'owner', 'kasir'].includes(user.role)) allowed = false;
     if (requireRole === 'customer' && user.role !== 'customer') allowed = false;
 
     if (!allowed) {

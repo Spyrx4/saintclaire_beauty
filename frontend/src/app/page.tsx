@@ -155,7 +155,7 @@ export default function Home() {
                   </div>
 
                   {/* Cart message bubble */}
-                  {cartMsg?.id === product.id && (
+                  {cartMsg && cartMsg.id === product.id && (
                     <div className={`absolute top-4 left-4 right-4 text-xs font-bold px-4 py-3 rounded-xl z-20 transition-all ${
                       cartMsg.ok ? 'bg-green-600 text-white' : 'bg-red-500 text-white'
                     }`}>

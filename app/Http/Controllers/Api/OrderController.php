@@ -161,8 +161,8 @@ class OrderController extends Controller
             ->where('id', $id)
             ->firstOrFail();
 
-        // Security: only owner, admin, or the owner of the order can download
-        if ($request->user()->role !== 'admin' && $request->user()->role !== 'owner' && $request->user()->id !== $order->user_id) {
+        // Security: only admin or the owner of the order can download
+        if ($request->user()->role !== 'admin' && $request->user()->id !== $order->user_id) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 

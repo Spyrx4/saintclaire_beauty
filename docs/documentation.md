@@ -312,25 +312,23 @@ Terdapat celah logika bisnis: siapa yang **menerima dan memproses pesanan** jika
 
 Bersamaan dengan itu, fitur **Payment Gateway** (Midtrans) dan **Shipping API** (RajaOngkir) diimplementasikan lengkap dengan fallback statis agar sistem tetap berjalan meski API key pihak ketiga belum dikonfigurasi.
 
-### 9.2 Role Matrix Final (4 Role)
+### 9.2 Role Matrix Final (2 Role)
 
-| Fitur | 👑 Owner | 🔧 Admin | 👩‍💼 Kasir | 🛒 Customer |
-|-------|:-------:|:-------:|:--------:|:----------:|
-| 9 Laporan Manajerial | ✅ | ✅ | ❌ | ❌ |
-| CRUD Produk, Kategori, Ingredient | ❌ | ✅ | ❌ | ❌ |
-| Lihat Semua Pesanan | ❌ | ✅ | ✅ | ❌ |
-| Update Status Pesanan | ❌ | ✅ | ✅ | ❌ |
-| Konfirmasi Pembayaran COD | ❌ | ❌ | ✅ | ❌ |
-| Cart & Checkout | ❌ | ❌ | ❌ | ✅ |
-| Pesanan Milik Sendiri | ❌ | ❌ | ❌ | ✅ |
+| Fitur | 🔧 Admin | 🛒 Customer |
+|-------|:-------:|:----------:|
+| 9 Laporan Manajerial | ✅ | ❌ |
+| CRUD Produk, Kategori, Ingredient | ✅ | ❌ |
+| Lihat Semua Pesanan | ✅ | ❌ |
+| Update Status Pesanan | ✅ | ❌ |
+| Konfirmasi Pembayaran COD | ✅ | ❌ |
+| Cart & Checkout | ❌ | ✅ |
+| Pesanan Milik Sendiri | ❌ | ✅ |
 
-### 9.3 Akun Login (4 Role)
+### 9.3 Akun Login (2 Role)
 
 | Role | Email | Password |
 |------|-------|----------|
-| 👑 Owner | `owner@saintclaire.com` | `password` |
 | 🔧 Admin | `admin@saintclaire.com` | `password` |
-| 👩‍💼 Kasir | `kasir@saintclaire.com` | `password` |
 | 🛒 Customer | `customer@gmail.com` | `password` |
 
 ---

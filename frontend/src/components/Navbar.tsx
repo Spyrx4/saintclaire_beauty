@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { getUser, isLoggedIn, isAdminOrOwner, isKasir, logout, UserData } from '@/lib/auth';
+import { getUser, isLoggedIn, isAdmin, logout, UserData } from '@/lib/auth';
 import { api } from '@/lib/api';
 
 export default function Navbar() {
@@ -36,13 +36,9 @@ export default function Navbar() {
     );
   }
 
-  const roleLabel = user?.role === 'owner' ? 'Owner' :
-                    user?.role === 'admin'  ? 'Admin'  :
-                    user?.role === 'kasir'  ? 'Kasir'  : null;
+  const roleLabel = user?.role === 'admin' ? 'Admin' : null;
 
-  const roleBadgeClass = user?.role === 'kasir'
-    ? 'text-[9px] text-blue-500 tracking-[0.3em] mt-1'
-    : 'text-[9px] text-secondary tracking-[0.3em] mt-1';
+  const roleBadgeClass = 'text-[9px] text-secondary tracking-[0.3em] mt-1';
 
   return (
     <nav className="glass fixed w-full z-50 py-5 transition-all duration-300">
@@ -55,16 +51,12 @@ export default function Navbar() {
         <div className="flex gap-6 items-center font-medium uppercase text-sm tracking-widest">
           <a href="/" className="hover:text-secondary transition-colors">Products</a>
 
-          {/* Admin/Owner dashboard */}
-          {isAdminOrOwner() && (
-            <a href="/admin/dashboard" className="hover:text-secondary transition-colors">Dashboard</a>
-          )}
-
-          {/* Kasir dashboard */}
-          {isKasir() && (
-            <a href="/kasir/dashboard" className="hover:text-blue-600 transition-colors text-blue-500">
-              Kasir Panel
-            </a>
+          {/* Admin dashboard & order management */}
+          {isAdmin() && (
+            <>
+              <a href="/admin/dashboard" className="hover:text-secondary transition-colors">Dashboard</a>
+              <a href="/admin/orders" className="hover:text-secondary transition-colors">Orders</a>
+            </>
           )}
 
           {/* Customer links */}

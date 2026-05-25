@@ -295,7 +295,7 @@ function CheckoutContent() {
                 )}
                 {paymentMethod === 'cod' && (
                   <div className="mt-4 bg-amber-50 border border-amber-100 rounded-2xl p-4 text-sm text-amber-700">
-                    💡 Siapkan uang tunai saat kurir tiba. Kasir akan mengkonfirmasi pembayaran.
+                    💡 Siapkan uang tunai saat kurir tiba. Admin akan mengkonfirmasi pembayaran.
                   </div>
                 )}
               </div>

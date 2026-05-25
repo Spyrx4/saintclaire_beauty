@@ -235,7 +235,7 @@ function DashboardContent() {
               <div className="flex items-center gap-2 mb-2">
                 <span className="w-2 h-2 bg-secondary rounded-full animate-pulse"></span>
                 <span className="text-[10px] uppercase tracking-[0.4em] font-black text-secondary">
-                  {user?.role === 'owner' ? 'Owner Strategy Center' : 'Administrative Access'}
+                  Administrative Access
                 </span>
               </div>
               <h2 className="text-3xl lg:text-5xl font-black text-primary tracking-tight">{activeReport}</h2>
@@ -362,10 +362,10 @@ function DashboardContent() {
   );
 }
 
-// Wrap with AuthGuard — only admin and owner can access
+// Wrap with AuthGuard — only admin can access
 export default function AdminDashboard() {
   return (
-    <AuthGuard requireRole="admin_or_owner">
+    <AuthGuard requireRole="admin">
       <DashboardContent />
     </AuthGuard>
   );

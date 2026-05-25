@@ -1,10 +1,10 @@
 "use client";
-
+ 
 import React, { useState, useEffect, useCallback } from 'react';
 import { api, getBaseApiUrl } from '@/lib/api';
 import { getUser } from '@/lib/auth';
 import AuthGuard from '@/components/AuthGuard';
-
+ 
 const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string; border: string }> = {
   pending:    { label: 'Menunggu',  color: 'text-amber-700',  bg: 'bg-amber-50',   border: 'border-amber-200' },
   processing: { label: 'Diproses', color: 'text-blue-700',   bg: 'bg-blue-50',    border: 'border-blue-200'  },
@@ -12,14 +12,14 @@ const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string; 
   completed:  { label: 'Selesai',   color: 'text-green-700',  bg: 'bg-green-50',   border: 'border-green-200' },
   cancelled:  { label: 'Dibatal',  color: 'text-red-700',    bg: 'bg-red-50',     border: 'border-red-200'   },
 };
-
+ 
 const NEXT_STATUS: Record<string, { label: string; next: string }> = {
   pending:    { label: '▶ Proses',  next: 'processing' },
   processing: { label: '📦 Kirim',  next: 'shipped'    },
   shipped:    { label: '✓ Selesai', next: 'completed'  },
 };
-
-function KasirDashboardContent() {
+ 
+function AdminOrdersContent() {
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('');
@@ -29,7 +29,7 @@ function KasirDashboardContent() {
   const [codConfirming, setCodConfirming] = useState<number | null>(null);
   const [downloading, setDownloading] = useState<number | null>(null);
   const user = getUser();
-
+ 
   const handleDownloadInvoice = async (id: number, orderNumber: string) => {
     try {
       setDownloading(id);
@@ -61,12 +61,12 @@ function KasirDashboardContent() {
       setDownloading(null);
     }
   };
-
+ 
   const fetchOrders = useCallback(async () => {
     setLoading(true);
     try {
       const params = statusFilter ? `?status=${statusFilter}` : '';
-      const data = await api.get(`/kasir/orders${params}`);
+      const data = await api.get(`/admin/orders-process${params}`);
       setOrders(data.data || []);
     } catch (err) {
       console.error(err);
@@ -74,9 +74,9 @@ function KasirDashboardContent() {
       setLoading(false);
     }
   }, [statusFilter]);
-
+ 
   useEffect(() => { fetchOrders(); }, [fetchOrders]);
-
+ 
   const updateStatus = async (orderId: number, nextStatus: string) => {
     setUpdating(orderId);
     try {
@@ -84,7 +84,7 @@ function KasirDashboardContent() {
       if (nextStatus === 'shipped' && tracking[orderId]) {
         payload.tracking_number = tracking[orderId];
       }
-      await api.put(`/kasir/orders/${orderId}/status`, payload);
+      await api.put(`/admin/orders-process/${orderId}/status`, payload);
       await fetchOrders();
       setShowTracking(null);
     } catch (err: any) {
@@ -93,12 +93,12 @@ function KasirDashboardContent() {
       setUpdating(null);
     }
   };
-
+ 
   const confirmCod = async (orderId: number) => {
     if (!confirm('Konfirmasi bahwa pembayaran COD telah diterima?')) return;
     setCodConfirming(orderId);
     try {
-      await api.post(`/kasir/orders/${orderId}/cod`, {});
+      await api.post(`/admin/orders-process/${orderId}/cod`, {});
       await fetchOrders();
     } catch (err: any) {
       alert(err.message || 'Gagal konfirmasi COD.');
@@ -106,13 +106,13 @@ function KasirDashboardContent() {
       setCodConfirming(null);
     }
   };
-
+ 
   const counts = {
     pending:    orders.filter(o => o.status === 'pending').length,
     processing: orders.filter(o => o.status === 'processing').length,
     shipped:    orders.filter(o => o.status === 'shipped').length,
   };
-
+ 
   return (
     <div className="flex min-h-screen bg-slate-50 pt-24">
       {/* Sidebar */}
@@ -123,15 +123,15 @@ function KasirDashboardContent() {
           </a>
           <img src="/logo.png" alt="Saint Claire Logo" className="h-12 w-auto rounded-lg mb-6 shadow-sm" />
         </div>
-
+ 
         <div className="bg-primary/5 rounded-2xl p-5">
           <p className="text-xs uppercase tracking-widest text-text-muted font-bold mb-1">Logged in as</p>
           <p className="text-primary font-bold">{user?.name}</p>
-          <span className="inline-block mt-2 text-[10px] uppercase tracking-widest bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-bold">
-            Kasir
+          <span className="inline-block mt-2 text-[10px] uppercase tracking-widest bg-amber-100 text-amber-700 px-3 py-1 rounded-full font-bold">
+            Admin
           </span>
         </div>
-
+ 
         {/* Stats */}
         <div className="space-y-3">
           <h3 className="uppercase tracking-widest text-xs font-bold text-primary">Status Pesanan</h3>
@@ -158,19 +158,19 @@ function KasirDashboardContent() {
           ))}
         </div>
       </aside>
-
+ 
       {/* Main */}
       <main className="flex-1 p-10">
         <div className="mb-8 flex justify-between items-center">
           <div>
-            <span className="text-blue-600 font-bold uppercase tracking-widest text-xs">Kasir Panel</span>
+            <span className="text-primary font-bold uppercase tracking-widest text-xs">Admin Panel</span>
             <h1 className="text-4xl font-bold text-primary mt-1">Manajemen Pesanan</h1>
           </div>
           <button onClick={() => fetchOrders()} className="bg-white border border-gray-200 px-5 py-2 rounded-lg text-sm font-medium hover:shadow-md transition-all">
             🔄 Refresh
           </button>
         </div>
-
+ 
         {loading ? (
           <div className="flex items-center justify-center h-64">
             <div className="w-10 h-10 border-4 border-slate-100 border-t-secondary rounded-full animate-spin"></div>
@@ -186,7 +186,7 @@ function KasirDashboardContent() {
               const s = STATUS_CONFIG[order.status] || STATUS_CONFIG.pending;
               const nextAction = NEXT_STATUS[order.status];
               const isCodShipped = order.payment_method === 'cod' && order.status === 'shipped';
-
+ 
               return (
                 <div key={order.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                   {/* Header */}
@@ -220,7 +220,7 @@ function KasirDashboardContent() {
                       </span>
                     </div>
                   </div>
-
+ 
                   {/* Items */}
                   <div className="px-6 py-4">
                     <div className="grid grid-cols-2 gap-3 mb-3">
@@ -238,7 +238,7 @@ function KasirDashboardContent() {
                       {order.tracking_number && <span>📌 {order.tracking_number}</span>}
                     </div>
                   </div>
-
+ 
                   {/* Footer */}
                   <div className="flex items-center justify-between px-6 py-4 bg-slate-50/50">
                     <p className="font-bold text-primary text-lg">
@@ -247,7 +247,7 @@ function KasirDashboardContent() {
                         (ongkir Rp {parseFloat(order.shipping_cost || 0).toLocaleString('id-ID')})
                       </span>
                     </p>
-
+ 
                     <div className="flex gap-2">
                       {/* Invoice Button */}
                       {order.status !== 'cancelled' && (
@@ -261,7 +261,7 @@ function KasirDashboardContent() {
                           ) : '📄 Invoice'}
                         </button>
                       )}
-
+ 
                       {/* COD Confirm Button — only when shipped */}
                       {isCodShipped && order.payment_status !== 'paid' && (
                         <button
@@ -272,7 +272,7 @@ function KasirDashboardContent() {
                           {codConfirming === order.id ? '...' : '💵 Konfirmasi COD'}
                         </button>
                       )}
-
+ 
                       {/* Next Status Button */}
                       {nextAction && order.status !== 'shipped' && (
                         <button
@@ -283,7 +283,7 @@ function KasirDashboardContent() {
                           {updating === order.id ? '...' : nextAction.label}
                         </button>
                       )}
-
+ 
                       {/* Ship with tracking number */}
                       {order.status === 'processing' && (
                         <div className="flex gap-2">
@@ -325,11 +325,11 @@ function KasirDashboardContent() {
     </div>
   );
 }
-
-export default function KasirDashboardPage() {
+ 
+export default function AdminOrdersPage() {
   return (
-    <AuthGuard requireRole="kasir">
-      <KasirDashboardContent />
+    <AuthGuard requireRole="admin">
+      <AdminOrdersContent />
     </AuthGuard>
   );
 }

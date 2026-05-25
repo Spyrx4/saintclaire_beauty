@@ -58,12 +58,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/payment/snap-token', [PaymentController::class, 'createSnapToken']);
     });
 
-    // ─── Kasir Only ──────────────────────────────────────────
-    Route::middleware('role:kasir')->group(function () {
-        Route::get('/kasir/orders',                [KasirController::class, 'index']);
-        Route::get('/kasir/orders/{id}',           [KasirController::class, 'show']);
-        Route::put('/kasir/orders/{id}/status',    [KasirController::class, 'updateStatus']);
-        Route::post('/kasir/orders/{id}/cod',      [PaymentController::class, 'confirmCod']);
+    // ─── Order Management (Admin) ────────────────────────────
+    Route::middleware('role:admin')->group(function () {
+        Route::get('/admin/orders-process',            [KasirController::class, 'index']);
+        Route::get('/admin/orders-process/{id}',       [KasirController::class, 'show']);
+        Route::put('/admin/orders-process/{id}/status',[KasirController::class, 'updateStatus']);
+        Route::post('/admin/orders-process/{id}/cod',  [PaymentController::class, 'confirmCod']);
     });
 
     // ─── Admin Only ──────────────────────────────────────────
@@ -86,8 +86,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/admin/orders/{id}/status',     [OrderController::class, 'updateStatus']);
     });
 
-    // ─── Owner + Admin (Reports) ─────────────────────────────
-    Route::middleware('role:owner,admin')->prefix('reports')->group(function () {
+    // ─── Admin Only (Reports) ────────────────────────────────
+    Route::middleware('role:admin')->prefix('reports')->group(function () {
         Route::get('/monthly-sales',         [ReportController::class, 'monthlySales']);
         Route::get('/inventory',             [ReportController::class, 'inventory']);
         Route::get('/best-sellers',          [ReportController::class, 'bestSellers']);

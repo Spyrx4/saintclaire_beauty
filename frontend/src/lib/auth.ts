@@ -4,7 +4,7 @@ export interface UserData {
   id: number;
   name: string;
   email: string;
-  role: 'owner' | 'admin' | 'kasir' | 'customer';
+  role: 'admin' | 'customer';
   tier?: string;
 }
 
@@ -32,29 +32,10 @@ export function isAdmin(): boolean {
   return getUser()?.role === 'admin';
 }
 
-export function isOwner(): boolean {
-  return getUser()?.role === 'owner';
-}
-
-export function isKasir(): boolean {
-  return getUser()?.role === 'kasir';
-}
-
-export function isAdminOrOwner(): boolean {
-  const role = getUser()?.role;
-  return role === 'admin' || role === 'owner';
-}
-
-export function isStaff(): boolean {
-  const role = getUser()?.role;
-  return role === 'admin' || role === 'owner' || role === 'kasir';
-}
-
 /** Redirect ke halaman yang sesuai setelah login berdasarkan role */
 export function getRedirectAfterLogin(): string {
   const role = getUser()?.role;
-  if (role === 'kasir') return '/kasir/dashboard';
-  if (role === 'admin' || role === 'owner') return '/admin/dashboard';
+  if (role === 'admin') return '/admin/dashboard';
   return '/';
 }
 
