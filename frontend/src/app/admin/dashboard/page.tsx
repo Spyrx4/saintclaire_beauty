@@ -19,15 +19,15 @@ function DashboardContent() {
   const router = useRouter();
 
   const reports = [
-    { name: "Monthly Sales", endpoint: "/reports/monthly-sales", icon: "💰" },
-    { name: "Inventory", endpoint: "/reports/inventory", icon: "📦" },
-    { name: "Best Sellers", endpoint: "/reports/best-sellers", icon: "🔥" },
-    { name: "Exclusive Customers", endpoint: "/reports/exclusive-customers", icon: "💎" },
-    { name: "Critical Stock", endpoint: "/reports/critical-stock", icon: "⚠️" },
-    { name: "Cancelled Transactions", endpoint: "/reports/cancelled-transactions", icon: "❌" },
-    { name: "Profit & Loss", endpoint: "/reports/profit-loss", icon: "📊" },
-    { name: "Audit Trail", endpoint: "/reports/audit-trail", icon: "📝" },
-    { name: "Ingredient Analysis", endpoint: "/reports/ingredient-analysis", icon: "🧪" },
+    { name: "Monthly Sales", endpoint: "/reports/monthly-sales", icon: "" },
+    { name: "Inventory", endpoint: "/reports/inventory", icon: "" },
+    { name: "Best Sellers", endpoint: "/reports/best-sellers", icon: "" },
+    { name: "Exclusive Customers", endpoint: "/reports/exclusive-customers", icon: "" },
+    { name: "Critical Stock", endpoint: "/reports/critical-stock", icon: "" },
+    { name: "Cancelled Transactions", endpoint: "/reports/cancelled-transactions", icon: "" },
+    { name: "Profit & Loss", endpoint: "/reports/profit-loss", icon: "" },
+    { name: "Audit Trail", endpoint: "/reports/audit-trail", icon: "" },
+    { name: "Ingredient Analysis", endpoint: "/reports/ingredient-analysis", icon: "" },
   ];
 
   useEffect(() => {
@@ -160,17 +160,17 @@ function DashboardContent() {
   }, [filteredData, sortConfig]);
 
   return (
-    <div className="flex min-h-screen bg-[#FDFBF9]">
+    <div className="flex min-h-screen bg-[#FDFBF9] pt-24">
       {/* Mobile Overlay */}
       {isMobileMenuOpen && (
         <div 
-          className="fixed inset-0 bg-black/20 z-40 lg:hidden backdrop-blur-sm"
+          className="fixed inset-0 bg-black/20 z-30 lg:hidden backdrop-blur-sm"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
 
       {/* Sidebar */}
-      <aside className={`w-72 bg-white border-r border-stone-100 flex flex-col fixed inset-y-0 shadow-sm z-50 transition-transform duration-300 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}>
+      <aside className={`w-72 bg-white border-r border-stone-100 flex flex-col fixed top-24 bottom-0 shadow-sm z-40 transition-transform duration-300 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}>
         <div className="p-8 border-b border-stone-50">
           <img src="/logo.png" alt="Saint Claire" className="h-10 w-auto mb-2" />
           <p className="text-[10px] uppercase tracking-[0.3em] font-black text-primary/40">Management Suite</p>
@@ -203,7 +203,7 @@ function DashboardContent() {
               onClick={handleLogout}
               className="w-full text-left px-4 py-3 rounded-xl text-red-400 hover:bg-red-50 transition-all text-sm font-bold flex items-center gap-3"
             >
-              <span>🚪</span> Sign Out
+              Sign Out
             </button>
           </div>
         </nav>
@@ -251,7 +251,7 @@ function DashboardContent() {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-12 pr-6 py-4 bg-white border border-stone-100 rounded-2xl text-sm focus:outline-none focus:ring-4 focus:ring-primary/5 w-full transition-all shadow-sm group-hover:shadow-md"
               />
-              <span className="absolute left-5 top-1/2 -translate-y-1/2 text-primary/30 group-focus-within:text-primary transition-colors">🔍</span>
+              <span className="absolute left-5 top-1/2 -translate-y-1/2 text-primary/30 group-focus-within:text-primary transition-colors"></span>
             </div>
             <button 
               onClick={handleExportPdf}
@@ -260,7 +260,7 @@ function DashboardContent() {
             >
               {exportLoading ? (
                 <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
-              ) : "📄"}
+              ) : ""}
               <span>Export PDF</span>
             </button>
           </div>
@@ -279,14 +279,14 @@ function DashboardContent() {
             <p className="text-[10px] uppercase tracking-[0.3em] font-black text-primary/30 mb-2">Total Operations</p>
             <h3 className="text-3xl font-black text-primary">{stats.total_orders} <span className="text-sm font-medium text-text-muted">Orders</span></h3>
             <div className="mt-4 flex items-center gap-2 text-xs font-bold text-amber-500 bg-amber-50 w-fit px-3 py-1 rounded-full">
-              <span>⚡</span> Active Processing
+              Active Processing
             </div>
           </div>
           <div className="bg-white p-8 rounded-[32px] border border-stone-100 shadow-sm">
             <p className="text-[10px] uppercase tracking-[0.3em] font-black text-primary/30 mb-2">Customer Base</p>
             <h3 className="text-3xl font-black text-primary">{stats.customers_count} <span className="text-sm font-medium text-text-muted">Members</span></h3>
             <div className="mt-4 flex items-center gap-2 text-xs font-bold text-secondary bg-secondary/10 w-fit px-3 py-1 rounded-full">
-              <span>💎</span> Exclusive Tiers
+              Exclusive Tiers
             </div>
           </div>
         </div>
@@ -351,7 +351,7 @@ function DashboardContent() {
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center h-[500px] text-center">
-               <div className="text-6xl mb-6 grayscale opacity-20">📂</div>
+               <div className="text-6xl mb-6 grayscale opacity-20"></div>
                <p className="text-primary font-bold">{searchTerm ? "No results matched your criteria." : "No data discovered for this segment."}</p>
                <p className="text-text-muted text-xs mt-2">Adjust your filters or try a different report category.</p>
             </div>

@@ -14,9 +14,9 @@ const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string; 
 };
  
 const NEXT_STATUS: Record<string, { label: string; next: string }> = {
-  pending:    { label: '▶ Proses',  next: 'processing' },
-  processing: { label: '📦 Kirim',  next: 'shipped'    },
-  shipped:    { label: '✓ Selesai', next: 'completed'  },
+  pending:    { label: 'Proses',  next: 'processing' },
+  processing: { label: 'Kirim',  next: 'shipped'    },
+  shipped:    { label: 'Selesai', next: 'completed'  },
 };
  
 function AdminOrdersContent() {
@@ -167,7 +167,7 @@ function AdminOrdersContent() {
             <h1 className="text-4xl font-bold text-primary mt-1">Manajemen Pesanan</h1>
           </div>
           <button onClick={() => fetchOrders()} className="bg-white border border-gray-200 px-5 py-2 rounded-lg text-sm font-medium hover:shadow-md transition-all">
-            🔄 Refresh
+            Refresh
           </button>
         </div>
  
@@ -177,7 +177,7 @@ function AdminOrdersContent() {
           </div>
         ) : orders.length === 0 ? (
           <div className="text-center py-24 text-text-muted">
-            <p className="text-5xl mb-4">📭</p>
+            <p className="text-5xl mb-4"></p>
             <p className="text-lg font-medium">Tidak ada pesanan ditemukan</p>
           </div>
         ) : (
@@ -206,13 +206,13 @@ function AdminOrdersContent() {
                           ? 'bg-amber-100 text-amber-700'
                           : 'bg-purple-100 text-purple-700'
                       }`}>
-                        {order.payment_method === 'cod' ? '💵 COD' : '💳 Midtrans'}
+                        {order.payment_method === 'cod' ? 'COD' : 'Midtrans'}
                       </span>
                       {/* Payment Status */}
                       <span className={`text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full ${
                         order.payment_status === 'paid' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'
                       }`}>
-                        {order.payment_status === 'paid' ? '✓ Lunas' : 'Belum Bayar'}
+                        {order.payment_status === 'paid' ? 'Lunas' : 'Belum Bayar'}
                       </span>
                       {/* Order Status */}
                       <span className={`text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full border ${s.bg} ${s.color} ${s.border}`}>
@@ -233,9 +233,9 @@ function AdminOrdersContent() {
                       ))}
                     </div>
                     <div className="flex items-center gap-6 text-xs text-text-muted pt-2 border-t border-gray-50">
-                      <span>📍 {order.shipping_address?.substring(0, 60)}...</span>
-                      <span>🚚 {order.courier}</span>
-                      {order.tracking_number && <span>📌 {order.tracking_number}</span>}
+                      <span>{order.shipping_address?.substring(0, 60)}...</span>
+                      <span>{order.courier}</span>
+                      {order.tracking_number && <span>{order.tracking_number}</span>}
                     </div>
                   </div>
  
@@ -258,7 +258,7 @@ function AdminOrdersContent() {
                         >
                           {downloading === order.id ? (
                             <div className="w-3 h-3 border-2 border-gray-300 border-t-primary rounded-full animate-spin"></div>
-                          ) : '📄 Invoice'}
+                          ) : 'Invoice'}
                         </button>
                       )}
  
@@ -269,7 +269,7 @@ function AdminOrdersContent() {
                           disabled={codConfirming === order.id}
                           className="bg-green-600 text-white px-5 py-2 rounded-xl text-sm font-bold hover:bg-green-700 transition-all disabled:opacity-50"
                         >
-                          {codConfirming === order.id ? '...' : '💵 Konfirmasi COD'}
+                          {codConfirming === order.id ? '...' : 'Konfirmasi COD'}
                         </button>
                       )}
  
@@ -301,7 +301,7 @@ function AdminOrdersContent() {
                                 disabled={updating === order.id}
                                 className="bg-indigo-600 text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-indigo-700 transition-all disabled:opacity-50"
                               >
-                                {updating === order.id ? '...' : '📦 Kirim'}
+                                {updating === order.id ? '...' : 'Kirim'}
                               </button>
                             </>
                           ) : (
@@ -309,7 +309,7 @@ function AdminOrdersContent() {
                               onClick={() => setShowTracking(order.id)}
                               className="border border-indigo-200 text-indigo-600 px-4 py-2 rounded-xl text-sm font-bold hover:bg-indigo-50 transition-all"
                             >
-                              📦 Kirim + Resi
+                              Kirim + Resi
                             </button>
                           )}
                         </div>

@@ -220,7 +220,7 @@ function CheckoutContent() {
                   disabled={checkingOngkir || !selectedCity}
                   className="bg-primary text-white px-6 py-3 rounded-xl text-sm font-bold hover:bg-secondary transition-all disabled:opacity-50 w-full mb-5"
                 >
-                  {checkingOngkir ? '⏳ Mengecek ongkir...' : '🔍 Cek Ongkos Kirim'}
+                  {checkingOngkir ? 'Mengecek ongkir...' : 'Cek Ongkos Kirim'}
                 </button>
 
                 {/* Shipping Services */}
@@ -262,8 +262,8 @@ function CheckoutContent() {
                 <h2 className="font-bold text-primary text-xl mb-6">3. Metode Pembayaran</h2>
                 <div className="grid grid-cols-2 gap-4">
                   {[
-                    { id: 'cod',      icon: '💵', label: 'COD',       desc: 'Bayar saat barang tiba' },
-                    { id: 'midtrans', icon: '💳', label: 'Midtrans',  desc: 'Transfer / E-Wallet / Kartu' },
+                    { id: 'cod',      icon: '', label: 'COD',       desc: 'Bayar saat barang tiba' },
+                    { id: 'midtrans', icon: '', label: 'Midtrans',  desc: 'Transfer / E-Wallet / Kartu' },
                   ].map(pm => (
                     <label
                       key={pm.id}
@@ -290,12 +290,12 @@ function CheckoutContent() {
                 </div>
                 {paymentMethod === 'midtrans' && (
                   <div className="mt-4 bg-purple-50 border border-purple-100 rounded-2xl p-4 text-sm text-purple-700">
-                    💡 Anda akan diarahkan ke halaman pembayaran Midtrans setelah konfirmasi.
+                    Anda akan diarahkan ke halaman pembayaran Midtrans setelah konfirmasi.
                   </div>
                 )}
                 {paymentMethod === 'cod' && (
                   <div className="mt-4 bg-amber-50 border border-amber-100 rounded-2xl p-4 text-sm text-amber-700">
-                    💡 Siapkan uang tunai saat kurir tiba. Admin akan mengkonfirmasi pembayaran.
+                    Siapkan uang tunai saat kurir tiba. Admin akan mengkonfirmasi pembayaran.
                   </div>
                 )}
               </div>
@@ -331,7 +331,7 @@ function CheckoutContent() {
                     <span className={`font-bold text-xs px-2 py-0.5 rounded-full ${
                       paymentMethod === 'cod' ? 'bg-amber-100 text-amber-700' : 'bg-purple-100 text-purple-700'
                     }`}>
-                      {paymentMethod === 'cod' ? '💵 COD' : '💳 Midtrans'}
+                      {paymentMethod === 'cod' ? 'COD' : 'Midtrans'}
                     </span>
                   </div>
                   <div className="flex justify-between font-bold text-lg pt-2 border-t border-gray-100">

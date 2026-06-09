@@ -53,10 +53,19 @@ export default function Navbar() {
 
           {/* Admin dashboard & order management */}
           {isAdmin() && (
-            <>
-              <a href="/admin/dashboard" className="hover:text-secondary transition-colors">Dashboard</a>
-              <a href="/admin/orders" className="hover:text-secondary transition-colors">Orders</a>
-            </>
+            <div className="relative group">
+              <span className="hover:text-secondary transition-colors cursor-pointer flex items-center gap-1">
+                Admin Panel
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </span>
+              <div className="absolute top-full left-0 mt-4 w-48 bg-white border border-stone-100 rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 flex flex-col overflow-hidden text-primary">
+                <a href="/admin/dashboard" className="px-4 py-3 hover:bg-stone-50 hover:text-secondary transition-colors text-xs font-bold border-b border-stone-50">Dashboard Reports</a>
+                <a href="/admin/orders" className="px-4 py-3 hover:bg-stone-50 hover:text-secondary transition-colors text-xs font-bold border-b border-stone-50">Manage Orders</a>
+                <a href="/admin/products" className="px-4 py-3 hover:bg-stone-50 hover:text-secondary transition-colors text-xs font-bold border-b border-stone-50">Products</a>
+                <a href="/admin/categories" className="px-4 py-3 hover:bg-stone-50 hover:text-secondary transition-colors text-xs font-bold border-b border-stone-50">Categories</a>
+                <a href="/admin/ingredients" className="px-4 py-3 hover:bg-stone-50 hover:text-secondary transition-colors text-xs font-bold">Ingredients</a>
+              </div>
+            </div>
           )}
 
           {/* Customer links */}
